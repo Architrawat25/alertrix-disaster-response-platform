@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlmodel import Session
 from app.db.session import get_session
 from app.db.models import Report
 from app.schemas.report import ReportCreate, ReportResponse, AnalyzeRequest
+from app.services.analyzer import analyze_report
 import logging
 
 router = APIRouter()
@@ -30,10 +31,24 @@ async def create_report(
 
 
 @router.post("/analyze")
-async def analyze_report(analyze_request: AnalyzeRequest):
-    """Mock analyze endpoint - will integrate AI in Phase 2"""
-    return {
-        "message": "analysis pending",
-        "report_id": analyze_request.report_id,
-        "status": "queued"
-    }
+async def analyze_report_endpoint(analyze_request: AnalyzeRequest, session: Session = Depends(get_session)):
+    """Analyze a report using AI integration layer"""
+    try:
+        # Get the report from database
+        report = session.get(Report, analyze_request.report_id)
+        if not report:
+            raise HTTPException(status_code=404, detail="Report not found")
+
+        # Call the AI analyzer
+        analysis_result = await analyze_report(report.text, report.lat, report.lon)
+
+        logger.info(f"Analysis completed for report {analyze_request.report_id}: "
+                    f"{analysis_result['disaster_type']} (severity: {analysis_result['severity_score']})")
+
+        return analysis_result
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Analysis failed for report {analyze_request.report_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Analysis failed")
