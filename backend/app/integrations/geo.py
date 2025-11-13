@@ -32,7 +32,7 @@ class GeoAdapter(AIAdapter):
                         "format": "json",
                         "addressdetails": 1
                     },
-                    headers={"User-Agent": "InfySuraksha/1.0"},
+                    headers={"User-Agent": "Alertrix/1.0"},
                     timeout=10.0
                 )
 

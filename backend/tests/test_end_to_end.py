@@ -8,7 +8,7 @@ from app.db.models import Report, Alert
 import time
 
 # Test database
-TEST_DATABASE_URL = "sqlite:///./test_infysuraksha.db"
+TEST_DATABASE_URL = "sqlite:///./test_alertrix.db"
 engine = create_engine(TEST_DATABASE_URL)
 
 
