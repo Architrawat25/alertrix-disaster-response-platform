@@ -1,29 +1,28 @@
-from fastapi import APIRouter
-from app.schemas.alert import AlertResponse
-from typing import List
+from fastapi import APIRouter, Depends, Query
+from sqlmodel import Session
+from typing import List, Optional
+from app.db.session import get_session
+from app.schemas.alert import AlertResponse, AlertFilter
+from app.services.alerts import get_filtered_alerts
 
 router = APIRouter()
 
+
 @router.get("/alerts", response_model=List[AlertResponse])
-async def get_alerts():
-    """Get mock alerts - will be connected to DB in Phase 3"""
-    return [
-        {
-            "id": 1,
-            "report_id": 1,
-            "disaster_type": "flood",
-            "severity_score": 75,
-            "summary": "Heavy flooding in downtown area",
-            "location_name": "Downtown City",
-            "created_at": "2024-01-15T10:30:00"
-        },
-        {
-            "id": 2,
-            "report_id": 2,
-            "disaster_type": "earthquake",
-            "severity_score": 90,
-            "summary": "Magnitude 6.5 earthquake reported",
-            "location_name": "Mountain Region",
-            "created_at": "2024-01-15T11:00:00"
-        }
-    ]
+async def get_alerts(
+        type: Optional[str] = Query(None, description="Filter by disaster type"),
+        min_severity: Optional[int] = Query(None, ge=0, le=100, description="Minimum severity score"),
+        limit: Optional[int] = Query(None, ge=1, le=100, description="Limit number of results"),
+        active_only: bool = Query(True, description="Show only active alerts"),
+        session: Session = Depends(get_session)
+):
+    """Get alerts with optional filtering"""
+    alert_filter = AlertFilter(
+        type=type,
+        min_severity=min_severity,
+        limit=limit,
+        active_only=active_only
+    )
+
+    alerts = get_filtered_alerts(session, alert_filter)
+    return alerts

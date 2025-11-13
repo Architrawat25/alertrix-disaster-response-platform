@@ -19,13 +19,15 @@ class Report(SQLModel, table=True):
     source: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    is_analyzed: bool = Field(default=False)
 
 class Alert(SQLModel, table=True):
     """Alert model for disaster alerts"""
     id: Optional[int] = Field(default=None, primary_key=True)
     report_id: int = Field(foreign_key="report.id")
-    disaster_type: DisasterType = Field(default=DisasterType.OTHER)
+    disaster_type: str
     severity_score: int = Field(default=0, ge=0, le=100)
     summary: str
     location_name: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    is_active: bool = Field(default=True)

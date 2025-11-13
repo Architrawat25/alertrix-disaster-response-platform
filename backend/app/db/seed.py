@@ -1,5 +1,5 @@
 from sqlmodel import Session
-from app.db.models import Report, Alert, DisasterType
+from app.db.models import Report, Alert
 from app.db.session import engine
 import logging
 
@@ -21,19 +21,29 @@ def seed_database():
                 text="Heavy rainfall causing flooding in downtown area. Multiple roads blocked.",
                 lat=40.7128,
                 lon=-74.0060,
-                source="mobile_app"
+                source="mobile_app",
+                is_analyzed=True
             ),
             Report(
                 text="Earthquake felt in mountain region. Buildings shaking for 30 seconds.",
                 lat=34.0522,
                 lon=-118.2437,
-                source="web_portal"
+                source="web_portal",
+                is_analyzed=True
             ),
             Report(
                 text="Forest fire spreading rapidly in national park area.",
                 lat=37.7749,
                 lon=-122.4194,
-                source="sms"
+                source="sms",
+                is_analyzed=True
+            ),
+            Report(
+                text="Severe storm with high winds damaging infrastructure.",
+                lat=51.5074,
+                lon=-0.1278,
+                source="twitter",
+                is_analyzed=True
             )
         ]
 
@@ -50,17 +60,31 @@ def seed_database():
         sample_alerts = [
             Alert(
                 report_id=sample_reports[0].id,
-                disaster_type=DisasterType.FLOOD,
+                disaster_type="flood",
                 severity_score=75,
                 summary="Urban flooding due to heavy rainfall",
-                location_name="Downtown Metro Area"
+                location_name="New York, NY, USA"
             ),
             Alert(
                 report_id=sample_reports[1].id,
-                disaster_type=DisasterType.EARTHQUAKE,
+                disaster_type="earthquake",
                 severity_score=90,
                 summary="Moderate earthquake with potential aftershocks",
-                location_name="Mountain Region"
+                location_name="Los Angeles, CA, USA"
+            ),
+            Alert(
+                report_id=sample_reports[2].id,
+                disaster_type="fire",
+                severity_score=85,
+                summary="Wildfire spreading in forest area",
+                location_name="San Francisco, CA, USA"
+            ),
+            Alert(
+                report_id=sample_reports[3].id,
+                disaster_type="storm",
+                severity_score=65,
+                summary="Severe storm causing infrastructure damage",
+                location_name="London, UK"
             )
         ]
 

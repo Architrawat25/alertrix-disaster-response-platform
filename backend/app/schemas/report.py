@@ -17,6 +17,7 @@ class ReportResponse(BaseModel):
     lon: float
     source: str
     created_at: datetime
+    is_analyzed: bool
 
     class Config:
         from_attributes = True
@@ -24,3 +25,9 @@ class ReportResponse(BaseModel):
 class AnalyzeRequest(BaseModel):
     """Schema for analyze request"""
     report_id: int
+
+class ReportStatusResponse(BaseModel):
+    """Schema for report status response"""
+    status: str
+    report: ReportResponse
+    message: str
