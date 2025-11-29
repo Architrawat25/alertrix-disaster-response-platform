@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 29% 96%;
+    --foreground: 211 35% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 211 35% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 211 35% 15%;
+    --primary: 211 35% 29%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 20% 85%;
+    --secondary-foreground: 211 35% 20%;
+    --muted: 210 20% 85%;
+    --muted-foreground: 211 35% 45%;
+    --accent: 16 100% 66%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 20% 80%;
+    --input: 210 20% 80%;
+    --ring: 211 35% 29%;
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 212 40% 6%;
+    --foreground: 210 40% 98%;
+    --card: 212 40% 10%;
+    --card-foreground: 210 40% 98%;
+    --popover: 212 40% 6%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 211 35% 29%;
+    --secondary: 212 40% 15%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 212 40% 15%;
+    --muted-foreground: 210 40% 60%;
+    --accent: 16 100% 66%;
+    --accent-foreground: 20 14% 4%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 212 40% 15%;
+    --input: 212 40% 15%;
+    --ring: 210 40% 98%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+
+
+
+
+
+
+
+/*
+For animation
+LoaderSplash.tsx inside components
+*/
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-zoomIn {
+  animation: zoomIn 1s ease-out forwards;
+}
+
+.animate-fadeOut {
+  animation: fadeOut 1s ease-out forwards;
+}
