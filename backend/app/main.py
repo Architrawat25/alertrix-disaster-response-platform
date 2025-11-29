@@ -20,7 +20,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://your-frontend-url.vercel.app",  #Actual frontend URL
+        "https://alertrix-disaster-response-platform.vercel.app/",  #Actual frontend URL
         "http://localhost:3000"  #Local development
     ],
     allow_credentials=True,
