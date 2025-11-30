@@ -1,7 +1,7 @@
 import httpx
 import random
 import logging
-from typing import List, Dict, Any
+from typing import Dict, Any
 from app.integrations.base import AIAdapter
 from app.core.config import settings
 
@@ -14,7 +14,8 @@ class ClassifierAdapter(AIAdapter):
     def __init__(self, use_mock: bool = None):
         super().__init__(use_mock or settings.USE_MOCK_AI)
         self.hf_key = settings.HF_API_KEY
-        self.disaster_types = ["flood", "fire", "earthquake", "storm", "other"]
+        # ADDED: volcano to disaster types
+        self.disaster_types = ["flood", "fire", "earthquake", "storm", "volcano", "other"]
 
     async def analyze(self, text: str) -> Dict[str, Any]:
         """Classify disaster type from text"""
@@ -81,6 +82,10 @@ class ClassifierAdapter(AIAdapter):
         elif any(word in text_lower for word in ["storm", "hurricane", "cyclone", "wind"]):
             disaster_type = "storm"
             confidence = random.uniform(0.7, 0.95)
+        # ADDED: Volcano detection
+        elif any(word in text_lower for word in ["volcano", "eruption", "volcanic", "ash", "magma", "lava"]):
+            disaster_type = "volcano"
+            confidence = random.uniform(0.8, 0.98)  # High confidence for clear volcano terms
         else:
             disaster_type = "other"
             confidence = random.uniform(0.3, 0.6)

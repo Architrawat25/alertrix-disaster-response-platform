@@ -75,8 +75,9 @@ class ReportAnalyzer:
 
     def _calculate_severity(self, disaster_type: str, confidence: float) -> int:
         """Calculate base severity score"""
-        # Base severity by disaster type
+        # Base severity by disaster type - ADDED volcano with high severity
         type_base_scores = {
+            "volcano": 85,  # ADDED: Volcano has high base severity
             "earthquake": 70,
             "fire": 65,
             "flood": 60,
@@ -107,6 +108,9 @@ class ReportAnalyzer:
             adjustment += 10
         elif disaster_type == "fire" and "rain" in conditions:
             adjustment -= 10
+        # ADDED: Volcano severity adjustments
+        elif disaster_type == "volcano" and wind_speed > 10:
+            adjustment += 5  # Higher winds spread ash further
 
         # Add some random variation (±5) to make mock results more realistic
         random_variation = random.randint(-5, 5)

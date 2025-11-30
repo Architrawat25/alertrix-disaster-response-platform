@@ -8,6 +8,7 @@ class DisasterType(str, Enum):
     EARTHQUAKE = "earthquake"
     FIRE = "fire"
     STORM = "storm"
+    VOLCANO = "volcano"  # ADDED: Support for volcano disasters
     OTHER = "other"
 
 class Report(SQLModel, table=True):
@@ -25,7 +26,7 @@ class Alert(SQLModel, table=True):
     """Alert model for disaster alerts"""
     id: Optional[int] = Field(default=None, primary_key=True)
     report_id: int = Field(foreign_key="report.id")
-    disaster_type: str
+    disaster_type: DisasterType = Field(default=DisasterType.OTHER)
     severity_score: int = Field(default=0, ge=0, le=100)
     summary: str
     location_name: str
