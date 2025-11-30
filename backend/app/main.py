@@ -5,6 +5,7 @@ from app.core.logging_config import setup_logging
 from app.api import routes_reports, routes_alerts, routes_health
 from app.db.session import create_db_and_tables
 import logging
+import os
 
 # Setup logging
 setup_logging()
@@ -16,15 +17,16 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware
+# CORS middleware - PRODUCTION READY
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://alertrix-disaster-response-platform.vercel.app/",  #Actual frontend URL
-        "http://localhost:3000"  #Local development
+        "https://alertrix-disaster-response-platform.vercel.app/", # My domain
+        "http://localhost:3000",
+        "https://localhost:3000"
     ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -37,6 +39,11 @@ app.include_router(routes_alerts.router, prefix="/api/v1", tags=["alerts"])
 def on_startup():
     """Initialize database and seed data on startup"""
     create_db_and_tables()
+    # Seed database on startup for deployment
+    from app.db.seed import seed_database
+    from scripts.seed_realistic import seed_realistic_data
+    seed_database()
+    seed_realistic_data()
     logger.info("Alertrix API started successfully")
 
 @app.get("/")
@@ -44,5 +51,15 @@ async def root():
     return {
         "message": "Welcome to Alertrix Disaster Response API",
         "version": "1.0.0",
-        "docs": "/docs"
+        "docs": "/docs",
+        "status": "deployed"
     }
+
+# Add OPTIONS handler for CORS preflight requests
+@app.options("/api/v1/report")
+async def options_report():
+    return {"message": "OK"}
+
+@app.options("/api/v1/alerts")
+async def options_alerts():
+    return {"message": "OK"}
