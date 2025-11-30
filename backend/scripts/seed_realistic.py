@@ -7,7 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Realistic disaster scenarios
+# Realistic disaster scenarios - FIXED: Added missing 'areas' for all types
 DISASTER_SCENARIOS = [
     {
         "type": "flood",
@@ -18,7 +18,7 @@ DISASTER_SCENARIOS = [
             "Urban flooding in {area}. Drainage systems overwhelmed."
         ],
         "severity_range": (60, 95),
-        "areas": ["downtown", "residential areas", "commercial district", "suburbs"]
+        "areas": ["downtown", "residential areas", "commercial district", "suburbs", "low-lying areas"]
     },
     {
         "type": "earthquake",
@@ -29,7 +29,8 @@ DISASTER_SCENARIOS = [
             "Earthquake alert for {area}. Emergency services mobilized."
         ],
         "severity_range": (70, 98),
-        "magnitudes": ["4.5", "5.2", "6.1", "5.8", "4.9"]
+        "magnitudes": ["4.5", "5.2", "6.1", "5.8", "4.9"],
+        "areas": ["mountain region", "city center", "coastal area", "valley"]  # ADDED THIS
     },
     {
         "type": "fire",
@@ -40,7 +41,7 @@ DISASTER_SCENARIOS = [
             "Residential fire outbreak in {area}. Multiple units responding."
         ],
         "severity_range": (65, 90),
-        "areas": ["forest area", "industrial zone", "residential district", "national park"]
+        "areas": ["forest area", "industrial zone", "residential district", "national park", "rural area"]
     },
     {
         "type": "storm",
@@ -51,7 +52,18 @@ DISASTER_SCENARIOS = [
             "Hurricane conditions in {area}. Coastal areas evacuated."
         ],
         "severity_range": (55, 85),
-        "areas": ["coastal region", "metropolitan area", "mountain region", "valley area"]
+        "areas": ["coastal region", "metropolitan area", "mountain region", "valley area", "plains"]
+    },
+    {
+        "type": "volcano",  # ADDED: Volcano scenario
+        "templates": [
+            "Volcanic eruption in {area}. Ash plume visible.",
+            "Volcano activity reported in {area}. Evacuations recommended.",
+            "Ash fall from volcanic eruption in {area}. Air quality concerns.",
+            "Volcanic tremors detected in {area}. Magma flow observed."
+        ],
+        "severity_range": (80, 98),
+        "areas": ["mountain region", "volcanic zone", "island area", "rift valley"]
     }
 ]
 
@@ -80,14 +92,14 @@ def generate_realistic_reports(count=40):
         disaster_type = random.choice(DISASTER_SCENARIOS)
         city = random.choice(INDIAN_CITIES)
 
-        # Generate report text
+        # Generate report text - FIXED: Handle missing 'areas' key
         if disaster_type["type"] == "earthquake":
             magnitude = random.choice(disaster_type["magnitudes"])
-            area = random.choice(disaster_type["areas"])
+            area = random.choice(disaster_type.get("areas", ["the region"]))  # FIX: Use get with default
             template = random.choice(disaster_type["templates"])
             text = template.format(magnitude=magnitude, area=area)
         else:
-            area = random.choice(disaster_type["areas"])
+            area = random.choice(disaster_type.get("areas", ["the area"]))  # FIX: Use get with default
             template = random.choice(disaster_type["templates"])
             text = template.format(area=area)
 
@@ -154,6 +166,12 @@ def generate_alerts_from_reports(reports):
                 "Storm damage assessment in progress",
                 "Emergency shelters opened"
             ],
+            "volcano": [  # ADDED: Volcano summaries
+                "Volcanic eruption with ash dispersion",
+                "Volcano monitoring and evacuation procedures",
+                "Ash fall affecting air travel and health",
+                "Magmatic activity with lava flows"
+            ],
             "other": [
                 "Emergency situation reported",
                 "Incident response activated",
@@ -162,7 +180,7 @@ def generate_alerts_from_reports(reports):
             ]
         }
 
-        summary = random.choice(summaries[disaster_type])
+        summary = random.choice(summaries.get(disaster_type, summaries["other"]))
 
         # Find city name for location
         location_name = "Unknown Location"
@@ -219,6 +237,7 @@ def seed_realistic_data():
 
     except Exception as e:
         logger.error(f"Failed to seed realistic data: {str(e)}")
+        # Don't raise the exception, just log it so the app can start
 
 
 if __name__ == "__main__":

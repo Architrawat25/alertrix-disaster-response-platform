@@ -21,16 +21,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware - PRODUCTION READY
+# CORS middleware - SIMPLIFIED TO GET IT WORKING
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://alertrix-disaster-response-platform.vercel.app/", # My domain
-        "http://localhost:3000",
-        "https://localhost:3000"
-    ],
+    allow_origins=["*"],  # Allow ALL origins for now
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -74,14 +70,3 @@ async def root():
         "docs": "/docs",
         "status": "deployed"
     }
-
-
-# Add OPTIONS handler for CORS preflight requests
-@app.options("/api/v1/report")
-async def options_report():
-    return {"message": "OK"}
-
-
-@app.options("/api/v1/alerts")
-async def options_alerts():
-    return {"message": "OK"}
